@@ -1,5 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import art0 from "./assets/art0.png";
+import art1 from "./assets/art1.png";
+import art2 from "./assets/art2.png";
+import NFT from "./components/NFT";
 
 function App() {
   return (
@@ -8,10 +12,9 @@ function App() {
         <Header>🕊️Donate For Greater Good🕊️</Header>
         <div>CHOOSE YOUR DONATION LEVEL</div>
         <NFTContainer>
-          <NFT>
-            <Image />
-            <Price></Price>
-          </NFT>
+          <NFT art={art0} price={"0.1 eth - 0.5 eth"}></NFT>
+          <NFT art={art1} price={"0.6 eth - 1 eth"}></NFT>
+          <NFT art={art2} price={"more than 1 eth"}></NFT>
         </NFTContainer>
       </Main>
     </Container>
@@ -20,13 +23,12 @@ function App() {
 
 export default App;
 
-const Price = styled.div``;
-
-const Image = styled.img``;
-
-const NFT = styled.div``;
-
-const NFTContainer = styled.div``;
+const NFTContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: space-between;
+`;
 
 const Header = styled.h2`
   margin: 10px 10px;
