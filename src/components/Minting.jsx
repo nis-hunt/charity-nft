@@ -1,23 +1,42 @@
 import React from "react";
 import styled from "styled-components";
+import { useMoralis } from "react-moralis";
 
 function Minting() {
+  const { authenticate, isAuthenticated } = useMoralis();
+
   return (
     <Container>
-      <ConnectWallet>Connect Wallet</ConnectWallet>
-      <LearnMore>Learn More</LearnMore>
+      {!isAuthenticated ? (
+        <IsAuth>
+          <Input placeholder="eth" type="number" />
+
+          <Donate>Donate</Donate>
+        </IsAuth>
+      ) : (
+        <>
+          <ConnectWallet onClick={authenticate}>Connect Wallet</ConnectWallet>
+          <LearnMore>Learn More</LearnMore>
+        </>
+      )}
     </Container>
   );
 }
 
 export default Minting;
 
-const Container = styled.div`
+const IsAuth = styled.div`
   display: flex;
-  margin-top: 20px;
-  gap: 20px;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
-const ConnectWallet = styled.div`
+
+const Input = styled.input`
+  text-align: right;
+`;
+
+const Button = styled.button`
   width: 200px;
   height: 35px;
   display: flex;
@@ -28,13 +47,24 @@ const ConnectWallet = styled.div`
   cursor: pointer;
   border: 3px solid #105751;
   border-radius: 20px;
+  color: white;
 
   &:hover {
-    background-color: #6f5b3e;
-    box-shadow: 12px 12px 40px -13px black;
+    background-color: #b18d73;
+    box-shadow: 0px 0px 100px 5px white;
+    color: black;
   }
 `;
-const LearnMore = styled(ConnectWallet)`
+
+const Donate = styled(Button)``;
+
+const Container = styled.div`
+  display: flex;
+  margin-top: 20px;
+  gap: 20px;
+`;
+const ConnectWallet = styled(Button)``;
+const LearnMore = styled(Button)`
   background-color: #6f5b3e;
   border: 3px solid #105751;
 `;

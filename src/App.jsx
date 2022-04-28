@@ -7,18 +7,23 @@ import Minting from "./components/Minting";
 import NFT from "./components/NFT";
 import Donations from "./components/Donations";
 import Goal from "./components/Goal";
-import Music from "./components/Music";
 
 function App() {
+  const [lights, setLights] = React.useState(false);
+  const lightsHandler = () => {
+    setLights(!lights);
+  };
+
   return (
     <Container>
       <Main>
-        <Header>🕊️Donate For A Greater Good🕊️</Header>
+        <Header onClick={lightsHandler}>🕊️Donate For A Greater Good🕊️</Header>
+
         <div>CHOOSE YOUR DONATION LEVEL</div>
         <NFTContainer>
-          <NFT art={art0} price={"0.1 eth - 0.5 eth"}></NFT>
-          <NFT art={art1} price={"0.6 eth - 1 eth"}></NFT>
-          <NFT art={art2} price={"more than 1 eth"}></NFT>
+          <NFT art={art0} ttl={"Moon"} price={"0.1 eth - 0.5 eth"}></NFT>
+          <NFT art={art1} ttl={"Jupitar"} price={"0.6 eth - 1 eth"}></NFT>
+          <NFT art={art2} ttl={"Naptune"} price={"more than 1 eth"}></NFT>
         </NFTContainer>
         <Minting />
         <Goal />
@@ -40,7 +45,8 @@ const NFTContainer = styled.div`
 const Header = styled.h2`
   margin: 20px 20px;
   justify-content: center;
-  text-shadow: 12px 12px 18px black;
+  text-shadow: 12px 12px 35px black;
+  cursor: pointer;
 `;
 
 const Main = styled.div`
@@ -53,6 +59,7 @@ const Main = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0 30px;
+  box-shadow: 12px 12px 40px -15px black;
 `;
 
 const Container = styled.div`

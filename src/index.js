@@ -1,13 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { MoralisProvider } from "react-moralis";
+// Figure out how to use url with .env
+// const URL = process.env.REACT_APP_SERVER_URL;
+// const ID = process.env.REACT_APP_APPLICATION_ID;
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <MoralisProvider
+      serverUrl="https://qxnr19wfrm6t.usemoralis.com:2053/server"
+      appId="hQv9NWbPE7hg9kpC3yvbC25juFXnPBR5JEq42Eo8"
+    >
+      <App />
+    </MoralisProvider>
   </React.StrictMode>
 );
 

@@ -4,6 +4,7 @@ import styled from "styled-components";
 function NFT(props) {
   return (
     <Container>
+      <Title>{props.ttl}</Title>
       <Image src={props.art} />
       <Price>{props.price}</Price>
     </Container>
@@ -14,7 +15,7 @@ export default NFT;
 
 const Price = styled.div`
   height: 30px;
-  background-color: #702f00;
+  background-color: #105751;
   font-size: 17px;
   width: 100%;
   color: white;
@@ -22,6 +23,8 @@ const Price = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+const Title = styled(Price)``;
 
 const Image = styled.img`
   width: 100%;
@@ -36,7 +39,7 @@ const Image = styled.img`
 
 const Container = styled.div`
   width: 200px;
-  height: 180px;
+  height: 200px;
   border-radius: 20px;
   overflow: hidden;
   margin: 15px;
@@ -46,6 +49,6 @@ const Container = styled.div`
   cursor: pointer;
   &:hover {
     background-color: #0c4540;
-    box-shadow: 12px 12px 40px -10px black;
+    box-shadow: 0px 0px 150px -10px white;
   }
 `;
