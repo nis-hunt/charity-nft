@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-function NFT(props) {
+function NFT({ donationValHandler, ttl, price, art, minPrice }) {
   return (
-    <Container>
-      <Title>{props.ttl}</Title>
-      <Image src={props.art} />
-      <Price>{props.price}</Price>
+    <Container onClick={() => donationValHandler(minPrice)}>
+      <Title>{ttl}</Title>
+      <Image src={art} />
+      <Price>{price}</Price>
     </Container>
   );
 }
@@ -50,5 +50,7 @@ const Container = styled.div`
   &:hover {
     background-color: #0c4540;
     box-shadow: 0px 0px 150px -10px white;
+    font-weight: bold;
+    text-shadow: 0px 0px 12px white;
   }
 `;

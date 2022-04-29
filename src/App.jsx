@@ -7,11 +7,18 @@ import Minting from "./components/Minting";
 import NFT from "./components/NFT";
 import Donations from "./components/Donations";
 import Goal from "./components/Goal";
+import { useState } from "react";
 
 function App() {
-  const [lights, setLights] = React.useState(false);
+  const [lights, setLights] = useState(false);
   const lightsHandler = () => {
     setLights(!lights);
+  };
+
+  const [donationVal, setDonationVal] = React.useState(0.01);
+
+  const donationValHandler = (val) => {
+    setDonationVal(val);
   };
 
   return (
@@ -19,13 +26,34 @@ function App() {
       <Main>
         <Header onClick={lightsHandler}>🕊️Donate For A Greater Good🕊️</Header>
 
-        <div>CHOOSE YOUR DONATION LEVEL</div>
+        <Header2>CHOOSE YOUR DONATION LEVEL</Header2>
         <NFTContainer>
-          <NFT art={art0} ttl={"Moon"} price={"0.1 eth - 0.5 eth"}></NFT>
-          <NFT art={art1} ttl={"Jupitar"} price={"0.6 eth - 1 eth"}></NFT>
-          <NFT art={art2} ttl={"Naptune"} price={"more than 1 eth"}></NFT>
+          <NFT
+            minPrice={0.01}
+            art={art0}
+            ttl={"Moon"}
+            price={"0.01 eth - 0.5 eth"}
+            donationValHandler={donationValHandler}
+          ></NFT>
+          <NFT
+            minPrice={0.6}
+            art={art1}
+            ttl={"Jupitar"}
+            price={"0.6 eth - 1 eth"}
+            donationValHandler={donationValHandler}
+          ></NFT>
+          <NFT
+            minPrice={1}
+            art={art2}
+            ttl={"Naptune"}
+            price={"more than 1 eth"}
+            donationValHandler={donationValHandler}
+          ></NFT>
         </NFTContainer>
-        <Minting />
+        <Minting
+          donationVal={donationVal}
+          donationValHandler={donationValHandler}
+        />
         <Goal />
         <Donations />
       </Main>
@@ -38,21 +66,27 @@ export default App;
 const NFTContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
   justify-content: space-between;
 `;
 
+const Header2 = styled.div`
+  color: #9c9e9c;
+`;
+
 const Header = styled.h2`
-  margin: 20px 20px;
+  margin: 10px 20px;
   justify-content: center;
   text-shadow: 12px 12px 35px black;
   cursor: pointer;
+
+  &:hover {
+    text-shadow: 0px 0px 12px white;
 `;
 
 const Main = styled.div`
   background-color: #6f5b3e;
   width: 1000px;
-  height: 80vh;
+  height: 95vh;
   border-radius: 30px;
   color: white;
   display: flex;
