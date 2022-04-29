@@ -7,15 +7,41 @@ import Minting from "./components/Minting";
 import NFT from "./components/NFT";
 import Donations from "./components/Donations";
 import Goal from "./components/Goal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useMoralis } from "react-moralis";
+import { ethers } from "ethers";
+import abi from "./contract/contract.json";
 
 function App() {
+  const { authenticate, isAuthenticated, user, enableWeb3, isWeb3Enabled } =
+    useMoralis();
   const [lights, setLights] = useState(false);
+  const [donationVal, setDonationVal] = React.useState(0.01);
+  const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
+
   const lightsHandler = () => {
     setLights(!lights);
   };
-
-  const [donationVal, setDonationVal] = React.useState(0.01);
+  // we are doing to ensure we change interface to login
+  // as soon as user disconnects metamask wallet
+  useEffect(() => {
+    // check if we can put the function out of the useEffect,
+    // the thing still works or not
+    const connectionHandler = async () => {
+      if (isWeb3Enabled) {
+        const web3Provider = await enableWeb3();
+        const contract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          abi,
+          web3Provider
+        );
+        const totalRaised = await contract.totalRaised();
+        const ethVal = ethers.utils.formatEther(totalRaised);
+        console.log("totalRaised:" + ethVal);
+      }
+    };
+    connectionHandler();
+  }, [isWeb3Enabled]);
 
   const donationValHandler = (val) => {
     setDonationVal(val);
@@ -23,8 +49,10 @@ function App() {
 
   return (
     <Container>
-      <Main>
-        <Header onClick={lightsHandler}>🕊️Donate For A Greater Good🕊️</Header>
+      <Main lights={lights}>
+        <Header onClick={lightsHandler} lights={lights}>
+          🕊️Donate For A Greater Good🕊️
+        </Header>
 
         <Header2>CHOOSE YOUR DONATION LEVEL</Header2>
         <NFTContainer>
@@ -76,15 +104,14 @@ const Header2 = styled.div`
 const Header = styled.h2`
   margin: 10px 20px;
   justify-content: center;
-  text-shadow: 12px 12px 35px black;
+  text-shadow: ${(props) =>
+    `${props.lights ? "0px 0px 12px white" : "12px 12px 35px black"}`};
   cursor: pointer;
-
-  &:hover {
-    text-shadow: 0px 0px 12px white;
 `;
 
 const Main = styled.div`
   background-color: #6f5b3e;
+  background-color: ${(props) => `${props.lights ? "#5e4735" : "#6f5b3e"}`};
   width: 1000px;
   height: 95vh;
   border-radius: 30px;
@@ -93,7 +120,10 @@ const Main = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0 30px;
-  box-shadow: 12px 12px 40px -15px black;
+  box-shadow: ${(props) =>
+    `${
+      props.lights ? "12px 12px 30px -15px white" : "12px 12px 40px -15px black"
+    }`};
 `;
 
 const Container = styled.div`
