@@ -18,6 +18,8 @@ function App() {
   const [lights, setLights] = useState(false);
   const [donationVal, setDonationVal] = React.useState(0.01);
   const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
+  const [raised, setRaised] = useState(0);
+  const [events, setEvents] = useState([]);
 
   const lightsHandler = () => {
     setLights(!lights);
@@ -28,20 +30,28 @@ function App() {
     // check if we can put the function out of the useEffect,
     // the thing still works or not
     const connectionHandler = async () => {
-      if (isWeb3Enabled) {
+      if (isAuthenticated) {
         const web3Provider = await enableWeb3();
         const contract = new ethers.Contract(
           CONTRACT_ADDRESS,
           abi,
           web3Provider
         );
-        const totalRaised = await contract.totalRaised();
-        const ethVal = ethers.utils.formatEther(totalRaised);
-        console.log("totalRaised:" + ethVal);
+        const totalRaisedInWei = await contract.totalRaised();
+        const totalRaised = parseFloat(
+          ethers.utils.formatEther(totalRaisedInWei)
+        );
+        // adding 10 fake ethers to show the progress bar
+        const totalRaisedFake = totalRaised + 10;
+        setRaised(totalRaisedFake);
+        // collect all the of the smart contract
+        let eventFilter = contract.filters.Donation();
+        let event = await contract.queryFilter(eventFilter);
+        setEvents(event);
       }
     };
     connectionHandler();
-  }, [isWeb3Enabled]);
+  }, [isAuthenticated]);
 
   const donationValHandler = (val) => {
     setDonationVal(val);
@@ -82,8 +92,8 @@ function App() {
           donationVal={donationVal}
           donationValHandler={donationValHandler}
         />
-        <Goal />
-        <Donations />
+        <Goal raised={raised} />
+        <Donations events={events} />
       </Main>
     </Container>
   );

@@ -1,12 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 
-function Goal(props) {
+function Goal({ raised }) {
+  // goal of the fundraiser = $100,000 ==> 38 ethers
+  const tobeRaised = 38;
+  // 1 ether = $2,861
+  const raisedInDollars = parseInt(raised * 2861);
+  const getPercentageRaised = () => {
+    if (raised > 0) {
+      // added fake 10 ethers in app component to show the progress bar
+      const raisedPercent = (raised / tobeRaised) * 100;
+      return raisedPercent;
+    } else {
+      const raisedPercent = 0;
+      return raisedPercent;
+    }
+  };
   return (
     <Container>
       <GoalText>Our Goal: $100,000</GoalText>
       <ProgressContainer>
-        <Progress progress={20}>$20,000</Progress>
+        <Progress progress={getPercentageRaised}>${raisedInDollars}</Progress>
       </ProgressContainer>
     </Container>
   );
