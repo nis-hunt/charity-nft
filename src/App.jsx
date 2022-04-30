@@ -13,8 +13,7 @@ import { ethers } from "ethers";
 import abi from "./contract/contract.json";
 
 function App() {
-  const { authenticate, isAuthenticated, user, enableWeb3, isWeb3Enabled } =
-    useMoralis();
+  const { isAuthenticated, enableWeb3, isWeb3Enabled } = useMoralis();
   const [lights, setLights] = useState(false);
   const [donationVal, setDonationVal] = React.useState(0.01);
   const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
@@ -30,7 +29,7 @@ function App() {
     // check if we can put the function out of the useEffect,
     // the thing still works or not
     const connectionHandler = async () => {
-      if (isAuthenticated) {
+      if (isWeb3Enabled) {
         const web3Provider = await enableWeb3();
         const contract = new ethers.Contract(
           CONTRACT_ADDRESS,
@@ -44,14 +43,14 @@ function App() {
         // adding 10 fake ethers to show the progress bar
         const totalRaisedFake = totalRaised + 10;
         setRaised(totalRaisedFake);
-        // collect all the of the smart contract
+        // collect all the of the events from the contract
         let eventFilter = contract.filters.Donation();
         let event = await contract.queryFilter(eventFilter);
         setEvents(event);
       }
     };
     connectionHandler();
-  }, [isAuthenticated]);
+  }, [isWeb3Enabled]);
 
   const donationValHandler = (val) => {
     setDonationVal(val);

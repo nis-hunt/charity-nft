@@ -38,8 +38,8 @@ const Image = styled.img`
 `;
 
 const Container = styled.div`
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   border-radius: 20px;
   overflow: hidden;
   margin: 15px;

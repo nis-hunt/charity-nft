@@ -16,24 +16,26 @@ function Donations({ events }) {
       </Headers>
 
       <DonationContainer>
-        {events.map((event, index) => (
-          <Donation
-            key={index}
-            onClick={() => donationClickHandler(event.transactionHash)}
-          >
-            <ProfileImageContainer>
-              <ProfileImage
-                src={`https://avatars.dicebear.com/api/croodles-neutral/${event.blockNumber}.svg`}
-              />
-            </ProfileImageContainer>
-            <From>
-              <EllipsisText text={event.args[0]} length={50} />
-            </From>
-            <Amount>
-              {ethers.utils.formatEther(event.args[].toString())}
-            </Amount>
-          </Donation>
-        ))}
+        {/* mapping in reverse direction, ie. newest first */}
+        {events
+          .slice(0)
+          .reverse()
+          .map((event, index) => (
+            <Donation
+              key={index}
+              onClick={() => donationClickHandler(event.transactionHash)}
+            >
+              <ProfileImageContainer>
+                <ProfileImage
+                  src={`https://avatars.dicebear.com/api/croodles-neutral/${event.blockNumber}.svg`}
+                />
+              </ProfileImageContainer>
+              <From>
+                <EllipsisText text={event.args[0]} length={50} />
+              </From>
+              <Amount>{ethers.utils.formatEther(event.args[1])}</Amount>
+            </Donation>
+          ))}
       </DonationContainer>
     </Container>
   );
@@ -90,8 +92,8 @@ const Donation = styled.div`
 const DonationContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 80%;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: scroll;
 `;
 
 const ImageHeading = styled.div`
@@ -101,10 +103,13 @@ const ImageHeading = styled.div`
 
 const Headers = styled.div`
   display: flex;
+  font-size: 17px;
 `;
 const Container = styled.div`
-  width: 80%;
+  width: 70%;
   border-radius: 20px;
   overflow: hidden;
   margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 17px;
 `;

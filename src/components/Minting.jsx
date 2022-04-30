@@ -144,7 +144,9 @@ const Button = styled.button`
   }
 `;
 
-const Donate = styled(Button)``;
+const Donate = styled(Button)`
+  margin-top: 10px;
+`;
 const Verify = styled(Button)``;
 const DonateContainer = styled(InputContainer)`
   gap: 20px;
