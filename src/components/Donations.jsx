@@ -10,7 +10,7 @@ function Donations({ events }) {
   return (
     <Container>
       <Headers>
-        <ImageHeading></ImageHeading>
+        <ImageHeading>Donations</ImageHeading>
         <From>From</From>
         <Amount>Amount</Amount>
       </Headers>
@@ -33,7 +33,7 @@ function Donations({ events }) {
               <From>
                 <EllipsisText text={event.args[0]} length={50} />
               </From>
-              <Amount>{ethers.utils.formatEther(event.args[1])}</Amount>
+              <Amount>{ethers.utils.formatEther(event.args[1])} eth</Amount>
             </Donation>
           ))}
       </DonationContainer>
@@ -90,20 +90,28 @@ const Donation = styled.div`
 `;
 
 const DonationContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   height: 100%;
   overflow-y: scroll;
+  // here's how to hide the scrollbar.
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ImageHeading = styled.div`
   flex: 0.2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #105751;
 `;
 
 const Headers = styled.div`
   display: flex;
   font-size: 17px;
+  text-shadow: 0px 0px 12px white;
 `;
 const Container = styled.div`
   width: 70%;

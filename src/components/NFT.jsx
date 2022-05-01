@@ -47,6 +47,8 @@ const Container = styled.div`
   flex-direction: column;
   box-shadow: 12px 12px 40px -15px black;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
+
   &:hover {
     background-color: #0c4540;
     box-shadow: 0px 0px 150px -10px white;

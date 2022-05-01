@@ -113,6 +113,8 @@ const Header2 = styled.div`
 const Header = styled.h2`
   margin: 10px 20px;
   justify-content: center;
+  transition: all 0.3s ease-in-out;
+
   text-shadow: ${(props) =>
     `${props.lights ? "0px 0px 12px white" : "12px 12px 35px black"}`};
   cursor: pointer;
@@ -129,6 +131,8 @@ const Main = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0 30px;
+  transition: all 0.3s ease-in-out;
+
   box-shadow: ${(props) =>
     `${
       props.lights ? "12px 12px 30px -15px white" : "12px 12px 40px -15px black"

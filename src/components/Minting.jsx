@@ -9,7 +9,7 @@ const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
 const targetNetworkId = "0x4";
 
 function Minting({ donationVal, donationValHandler }) {
-  const { authenticate, isAuthenticated, Moralis, isWeb3Enabled } =
+  const { authenticate, isAuthenticated, Moralis, isWeb3Enabled, enableWeb3 } =
     useMoralis();
   const [donateHash, setDonateHash] = useState();
   const [inprogress, setInprogress] = useState(false);
@@ -41,7 +41,6 @@ function Minting({ donationVal, donationValHandler }) {
 
     // wait("how many confirmations to wait for")
     await mintFunction.wait(1).then((res) => {
-      console.table(res);
       setInprogress(false);
       setDonateHash(res.transactionHash);
     });
@@ -49,6 +48,10 @@ function Minting({ donationVal, donationValHandler }) {
 
   const verifyHandler = () => {
     window.open(`https://rinkeby.etherscan.io/tx/${donateHash}`, "_blank");
+  };
+
+  const LearnMoreHandler = () => {
+    window.open(`https://www.youtube.com/watch?v=vX2cDW8LUWk`, "_blank");
   };
 
   return (
@@ -80,7 +83,7 @@ function Minting({ donationVal, donationValHandler }) {
           <ConnectWallet onClick={connectWalletHandler}>
             Connect Wallet
           </ConnectWallet>
-          <LearnMore>Learn More</LearnMore>
+          <LearnMore onClick={LearnMoreHandler}>Learn More</LearnMore>
         </>
       )}
     </Container>
@@ -93,6 +96,8 @@ const Type = styled.div`
   margin-bottom: 10px;
   margin-left: 5px;
   font-weight: bold;
+  transition: all 0.3s ease-in-out;
+
 
   &:hover {
     text-shadow: 0px 0px 5px white;
@@ -135,6 +140,7 @@ const Button = styled.button`
   border: 3px solid #105751;
   border-radius: 20px;
   color: white;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
     box-shadow: 0px 0px 100px 5px white;
