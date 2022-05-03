@@ -1,49 +1,85 @@
 import React from "react";
 import styled from "styled-components";
-import { useMoralis } from "react-moralis";
 import { useState } from "react";
 import ReactLoading from "react-loading";
 import { ethers } from "ethers";
 import abi from "../contract/contract.json";
-const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
-const targetNetworkId = "0x4";
+const CONTRACT_ADDRESS = "0x52c48b0b45e8C7d5bE49F42c10d676fB89Daea93";
 
-function Minting({ donationVal, donationValHandler }) {
-  const { authenticate, isAuthenticated, Moralis, isWeb3Enabled, enableWeb3 } =
-    useMoralis();
-  const [donateHash, setDonateHash] = useState();
+function Minting({
+  donationVal,
+  donationValHandler,
+  donateHash,
+  setDonateHash,
+}) {
   const [inprogress, setInprogress] = useState(false);
+  const [signature, setSignature] = useState();
+  const message =
+    "🕊️Lets connect in the name of peace🕊️ \n Peace begins with a smile ― Mother Teresa";
 
+  //connect using moralis:
+  // const connectWalletHandler = async () => {
+  //   // bring user to Rinkeby network
+  //   await window.ethereum.request({
+  //     method: "wallet_switchEthereumChain",
+  //     params: [{ chainId: targetNetworkId }],
+  //   });
+  //   // authenticate user
+  //   authenticate({
+  //     signingMessage:
+  //       "🕊️Lets connect in the name of peace🕊️ \n Peace begins with a smile ― Mother Teresa",
+  //   });
+  // };
+
+  // connect using ethers(without moralis):
   const connectWalletHandler = async () => {
-    // bring user to Rinkeby network
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: targetNetworkId }],
-    });
-    // authenticate user
-    authenticate({
-      signingMessage:
-        "🕊️Lets connect in the name of peace🕊️ \n Peace begins with a smile ― Mother Teresa",
-    });
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    setSignature(await signer.signMessage(message));
   };
 
+  // // mint using Moralis:
+  // const donateHandler = async () => {
+  //   const sendOptions = {
+  //     contractAddress: CONTRACT_ADDRESS,
+  //     functionName: "mint",
+  //     abi: abi,
+  //     msgValue: ethers.utils.parseEther(donationVal.toString()).toString(),
+  //   };
+
+  //   // Search executeFunction in Moralis documentation
+  //   const mintFunction = await Moralis.executeFunction(sendOptions);
+  //   setInprogress(true);
+
+  //   // wait("how many confirmations to wait for")
+  //   await mintFunction.wait(1).then((res) => {
+  //     setInprogress(false);
+  //     setDonateHash(res.transactionHash);
+  //   });
+  // };
+
   const donateHandler = async () => {
-    const sendOptions = {
-      contractAddress: CONTRACT_ADDRESS,
-      functionName: "mint",
-      abi: abi,
-      msgValue: ethers.utils.parseEther(donationVal.toString()).toString(),
-    };
-
-    // Search executeFunction in Moralis documentation
-    const mintFunction = await Moralis.executeFunction(sendOptions);
-    setInprogress(true);
-
-    // wait("how many confirmations to wait for")
-    await mintFunction.wait(1).then((res) => {
-      setInprogress(false);
-      setDonateHash(res.transactionHash);
-    });
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      // A contract consist of the following items:
+      // 1. A smart contract address
+      // 2. A ABI (Application Binary Interface)
+      // 3. A signer (the account that will sign the transaction)
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
+      try {
+        const response = await contract.mint({
+          value: ethers.utils.parseEther(donationVal.toString()).toString(),
+        });
+        setInprogress(true);
+        await response.wait(1).then((res) => {
+          setInprogress(false);
+          setDonateHash(res.transactionHash);
+        });
+      } catch (e) {
+        console.log("erroe: ", e);
+      }
+    }
   };
 
   const verifyHandler = () => {
@@ -56,7 +92,7 @@ function Minting({ donationVal, donationValHandler }) {
 
   return (
     <Container>
-      {isWeb3Enabled ? (
+      {signature ? (
         <IsAuth>
           {!inprogress ? (
             <InputContainer>

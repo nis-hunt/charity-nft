@@ -260,6 +260,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "contractBeneficiary",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",

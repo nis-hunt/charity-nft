@@ -33,7 +33,10 @@ function Donations({ events }) {
               <From>
                 <EllipsisText text={event.args[0]} length={50} />
               </From>
-              <Amount>{ethers.utils.formatEther(event.args[1])} eth</Amount>
+              <Amount>
+                {parseFloat(ethers.utils.formatEther(event.args[1])).toFixed(2)}{" "}
+                eth
+              </Amount>
             </Donation>
           ))}
       </DonationContainer>
@@ -50,6 +53,7 @@ const ProfileImage = styled.img`
   width: 50px;
   height: 50px;
   box-shadow: 12px 12px 40px -7px black;
+  transition: all 0.3s ease-in-out;
   &:hover {
     background-color: #fff;
     box-shadow: 0px 0px 40px 5px white;

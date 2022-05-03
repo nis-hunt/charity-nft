@@ -39,12 +39,14 @@ const Progress = styled.div`
   font-weight: bold;
   color: #105751;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
     background-color: #fff;
     box-shadow: 0px 0px 150px 15px white;
     font-weight: bold;
     text-shadow: 0px 0px 12px white;
+    
 `;
 
 const ProgressContainer = styled.div`
@@ -58,6 +60,7 @@ const ProgressContainer = styled.div`
 
 const GoalText = styled.div`
 font-weight: bold;
+transition: all 0.3s ease-in-out;
 &:hover {
     text-shadow: 0px 0px 5px white;`;
 

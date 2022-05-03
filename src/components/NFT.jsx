@@ -49,6 +49,11 @@ const Container = styled.div`
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 
+  @media screen and (max-width: 1440px) {
+    width: 250px;
+    height: 250px;
+  }
+
   &:hover {
     background-color: #0c4540;
     box-shadow: 0px 0px 150px -10px white;

@@ -8,49 +8,106 @@ import NFT from "./components/NFT";
 import Donations from "./components/Donations";
 import Goal from "./components/Goal";
 import { useState, useEffect } from "react";
-import { useMoralis } from "react-moralis";
+// import { useMoralis } from "react-moralis";
 import { ethers } from "ethers";
 import abi from "./contract/contract.json";
+import MetamaskPopup from "./components/MetamaskPopup";
 
 function App() {
-  const { isAuthenticated, enableWeb3, isWeb3Enabled } = useMoralis();
+  // const { isAuthenticated, enableWeb3, isWeb3Enabled } = useMoralis();
   const [lights, setLights] = useState(false);
   const [donationVal, setDonationVal] = React.useState(0.01);
-  const CONTRACT_ADDRESS = "0x2a1E86535e8ee4c174C42d4c1b521FdbF939E97F";
+  const [donateHash, setDonateHash] = useState();
+  const CONTRACT_ADDRESS = "0x52c48b0b45e8C7d5bE49F42c10d676fB89Daea93";
   const [raised, setRaised] = useState(0);
   const [events, setEvents] = useState([]);
+  const [noMetamask, setNoMetamask] = useState(false);
+  const targetNetworkId = "0x4";
+  const [userAccounts, setUserAccounts] = useState([]);
+  // if the user is yet to connect, the userAccounts will be empty
+  const isConnected = Boolean(userAccounts[0]);
 
   const lightsHandler = () => {
     setLights(!lights);
   };
-  // we are doing to ensure we change interface to login
-  // as soon as user disconnects metamask wallet
+  // Implementation using Moralis:
+
+  // useEffect(() => {
+  //   const connectionHandler = async () => {
+  //     if (isWeb3Enabled) {
+  //       const web3Provider = await enableWeb3();
+  //       const contract = new ethers.Contract(
+  //         CONTRACT_ADDRESS,
+  //         abi,
+  //         web3Provider
+  //       );
+  //       const totalRaisedInWei = await contract.totalRaised();
+  //       const totalRaised = parseFloat(
+  //         ethers.utils.formatEther(totalRaisedInWei)
+  //       );
+  //       // adding 10 fake ethers to show the progress bar
+  //       const totalRaisedFake = totalRaised + 10;
+  //       setRaised(totalRaisedFake);
+  //       // collect all the of the events from the contract
+  //       let eventFilter = contract.filters.Donation();
+  //       let event = await contract.queryFilter(eventFilter);
+  //       setEvents(event);
+  //     }
+  //   };
+  //   connectionHandler();
+  // }, [isWeb3Enabled]);
+
+  // Implementation using ethers(without Moralis):
+
   useEffect(() => {
-    // check if we can put the function out of the useEffect,
-    // the thing still works or not
     const connectionHandler = async () => {
-      if (isWeb3Enabled) {
-        const web3Provider = await enableWeb3();
-        const contract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          abi,
-          web3Provider
-        );
-        const totalRaisedInWei = await contract.totalRaised();
-        const totalRaised = parseFloat(
-          ethers.utils.formatEther(totalRaisedInWei)
-        );
-        // adding 10 fake ethers to show the progress bar
-        const totalRaisedFake = totalRaised + 10;
-        setRaised(totalRaisedFake);
-        // collect all the of the events from the contract
-        let eventFilter = contract.filters.Donation();
-        let event = await contract.queryFilter(eventFilter);
-        setEvents(event);
+      if (window.ethereum) {
+        // switch to the target network ie. rinkeby
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: targetNetworkId }],
+        });
+        // refresh the page to get the new accounts
+        // window.location.reload();
+
+        // get the user's accounts
+        const _accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setUserAccounts(_accounts);
+        console.table(userAccounts);
+
+        // Fetch the events date from the contract
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        // A contract consist of the following items:
+        // 1. A smart contract address
+        // 2. A ABI (Application Binary Interface)
+        // 3. A signer (the account that will sign the transaction)
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
+        try {
+          const totalRaisedInWei = await contract.totalRaised();
+          const totalRaised = parseFloat(
+            ethers.utils.formatEther(totalRaisedInWei)
+          );
+          // adding 10 fake ethers to show the progress bar
+          const totalRaisedFake = totalRaised + 10;
+          setRaised(totalRaisedFake);
+          // collect all the of the events from the contract
+          let eventFilter = contract.filters.Donation();
+          let event = await contract.queryFilter(eventFilter);
+          setEvents(event);
+        } catch (e) {
+          console.log("erroe: ", e);
+        }
+      } else {
+        setNoMetamask(true);
+        console.log("no metamask", noMetamask);
       }
     };
     connectionHandler();
-  }, [isWeb3Enabled]);
+  }, [isConnected, donateHash, noMetamask, userAccounts]);
 
   const donationValHandler = (val) => {
     setDonationVal(val);
@@ -82,17 +139,26 @@ function App() {
           <NFT
             minPrice={1}
             art={art2}
-            ttl={"Naptune"}
+            ttl={"Venus"}
             price={"more than 1 eth"}
             donationValHandler={donationValHandler}
           ></NFT>
         </NFTContainer>
-        <Minting
-          donationVal={donationVal}
-          donationValHandler={donationValHandler}
-        />
-        <Goal raised={raised} />
-        <Donations events={events} />
+
+        {noMetamask ? (
+          <MetamaskPopup />
+        ) : (
+          <>
+            <Minting
+              donationVal={donationVal}
+              donationValHandler={donationValHandler}
+              donateHash={donateHash}
+              setDonateHash={setDonateHash}
+            />
+            <Goal raised={raised} />
+            <Donations events={events} />
+          </>
+        )}
       </Main>
     </Container>
   );
@@ -121,9 +187,10 @@ const Header = styled.h2`
 `;
 
 const Main = styled.div`
-  background-color: #6f5b3e;
   background-color: ${(props) => `${props.lights ? "#5e4735" : "#6f5b3e"}`};
-  width: 1000px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  width: 1100px;
   height: 95vh;
   border-radius: 30px;
   color: white;
@@ -142,9 +209,16 @@ const Main = styled.div`
 const Container = styled.div`
   margin: 0 auto;
   background-color: #105751;
+
+  background-size: 250px;
+  background-repeat: repeat;
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media screen and (max-width: 1440px) {
+    width: 100vw;
+  }
 `;
