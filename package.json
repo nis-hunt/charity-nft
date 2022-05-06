@@ -39,5 +39,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "surge --project ./build --domain peacenft.surge.sh"
+    }
+  },
+  "devDependencies": {
+    "git-scripts": "^0.6.4",
+    "surge": "^0.23.1"
   }
 }
