@@ -3,6 +3,8 @@ import styled from "styled-components";
 import art0 from "./assets/art0.png";
 import art1 from "./assets/art1.png";
 import art2 from "./assets/art2.png";
+import etherscan from "./assets/etherscan.png";
+import opensea from "./assets/opensea.png";
 import Minting from "./components/Minting";
 import NFT from "./components/NFT";
 import Donations from "./components/Donations";
@@ -75,7 +77,6 @@ function App() {
           method: "eth_requestAccounts",
         });
         setUserAccounts(_accounts);
-        console.table(userAccounts);
 
         // Fetch the events date from the contract
 
@@ -160,6 +161,24 @@ function App() {
           </>
         )}
       </Main>
+      <LinkTo>
+        <div
+          onClick={() =>
+            window.open(
+              "https://rinkeby.etherscan.io/address/0x52c48b0b45e8c7d5be49f42c10d676fb89daea93#code"
+            )
+          }
+        >
+          <img src={etherscan} alt="etherscan" />
+        </div>
+        <div
+          onClick={() =>
+            window.open("https://testnets.opensea.io/collection/peacenft")
+          }
+        >
+          <img src={opensea} alt="opensea" />
+        </div>
+      </LinkTo>
     </Container>
   );
 }
@@ -170,6 +189,46 @@ const NFTContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+const LinkTo = styled.div`
+  display: flex;
+  position: absolute;
+  bottom: 0vh;
+  right: 2vw;
+  flex-direction: column;
+
+  padding: 2rem 1rem;
+
+  div {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: transparent;
+    margin: 1rem 0;
+    cursor: pointer;
+    
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: all 0.3s ease-in-out;
+
+    img {
+      width: 40px;
+      height: 40px;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--secondary-color);
+
+      svg {
+        color: white;
+        filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.792));
+      }
 `;
 
 const Header2 = styled.div`

@@ -35,7 +35,9 @@ function Minting({
   const connectWalletHandler = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
-    setSignature(await signer.signMessage(message));
+    await signer.signMessage(message).then((res) => {
+      setSignature(res);
+    });
   };
 
   // // mint using Moralis:
