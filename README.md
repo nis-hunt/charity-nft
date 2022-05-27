@@ -1,3 +1,3 @@
 # Deployed at:
 
-## [Peace NFT](peaceNFT.surge.sh)
+## [Peace NFT](https://peacenft.surge.sh/)
